@@ -9,10 +9,9 @@ class ListBooksScreen extends StatefulWidget {
 }
 
 class _ListBooksScreenState extends State<ListBooksScreen> {
-   TextEditingController textEditingController = TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    List<String> books = ['Book 1', 'Book 2', 'Book 3', 'Book 4'];
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
@@ -29,6 +28,7 @@ class _ListBooksScreenState extends State<ListBooksScreen> {
         ),
         body: Container(
           child: FutureBuilder(
+
             future: ApiService().getBooks(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -39,51 +39,59 @@ class _ListBooksScreenState extends State<ListBooksScreen> {
                 return Center(
                   child: Text('Something went wrong!'),
                 );
-              } else {
+              } else if (snapshot.hasData) {
+                // Assuming your response data is a list of books
+                final List<dynamic> books = snapshot.data!.data['books'];
+
                 return ListView.builder(
+                  itemCount: books.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(snapshot.data[index]['name']), // Supondo que os dados são uma lista de livros.
+                      title: Text(books[index]['name']),
                     );
                   },
-                  itemCount: snapshot.data?.length,
+                );
+              } else {
+                return Center(
+                  child: Text('No data available'),
                 );
               }
             },
+
           ),
         )
     );
   }
-   Future<void> _showMyDialog() async {
+  Future<void> _showMyDialog() async {
 
-     return showDialog<void>(
-       context: context,
-       barrierDismissible: false, // user must tap button!
-       builder: (BuildContext context) {
-         return AlertDialog(
-           title: const Text('Add Book'),
-           content:  SingleChildScrollView(
-             child: ListBody(
-               children: <Widget>[
-                 Text('Book Name'),
-                 TextField(controller:textEditingController),
-               ],
-             ),
-           ),
-           actions: <Widget>[
-             TextButton(
-               child:  const Text('Save'),
-               onPressed: () async{
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Book'),
+          content:  SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Book Name'),
+                TextField(controller:textEditingController),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child:  const Text('Save'),
+              onPressed: () async{
                 await ApiService().createBook({"book_name":textEditingController.text});
-                 print(textEditingController.text);
-                 Navigator.of(context).pop();
-               },
-             ),
-           ],
-         );
-       },
-     );
-   }
+                print(textEditingController.text);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 
 }

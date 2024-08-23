@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:starter/databases/book_database.dart';
 import 'package:starter/screens/home_screen.dart';
-import 'package:starter/screens/list_books.dart';
 
-void main()async {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseBooks().getDataBase();
+  await DataBaseBooks().initDB();
   runApp(const MyApp());
 }
 

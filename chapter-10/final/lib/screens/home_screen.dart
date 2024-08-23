@@ -22,7 +22,11 @@ class HomeScreen extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.8,
             child: Column(
               children: [
-                Image.asset('assets/packt_logo.png'),
+                Image.asset(
+                  'assets/images/books.png',
+                  width: 200,
+                  height: 100,
+                ),
                 TextFormField(
                     decoration: InputDecoration(
                   hintText: 'e-mail',
@@ -57,18 +61,20 @@ class HomeScreen extends StatelessWidget {
                 ElevatedButton(
                     onPressed:()async {
                       try{
-                       await ApiService().login({"email":"oto@mail.com","password":"123456"});
-                       Navigator.of(context).push(
-                         MaterialPageRoute(
-                           builder: (context) => const ListBooksScreen(),
-                         ),
-                       );
+                        await ApiService().login({"email":"oto@mail.com","password":"123456"});
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ListBooksScreen(),
+                          ),
+                        );
                       }on Exception catch(e){
                         print(e);
                         print('Something went wrong');
                       }
                     },
-                    child: Text('Send'))
+                    child: Text('Send')
+                )
+
               ],
             ),
           )),
